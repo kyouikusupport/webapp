@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ラップタイム計測器</title>
+    <link rel="stylesheet" href="style3.css">
+</head>
+<body>
+    <div id="container">
+        <div id="timer-button-container">
+            <div id="timer">00:00.0</div>
+            <div id="button-container">
+                <button id="start">スタート</button>
+                <button id="stop" style="display:none;">ストップ</button>
+                <button id="lap">ラップ</button>
+                <button id="reset">リセット</button>
+            </div>
+        </div>
+        <div id="lap-graph-container">
+            <div id="lapTable-container">
+                <table id="lapTable">
+                    <thead>
+                        <tr>
+                            <th>周回数</th>
+                            <th>周回タイム</th>
+                            <th>ラップ</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+            <div id="lapGraph-container">
+                <canvas id="lapGraph" width="300" height="160"></canvas>
+                <div id="time-display">タイム表示</div> <!-- 追加部分 -->
+            </div>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
