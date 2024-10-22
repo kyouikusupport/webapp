@@ -1,0 +1,162 @@
+﻿/* 全体のレイアウト */
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f4f4f4;
+  margin: 0;
+  padding: 20px;
+  text-align: center;
+}
+
+/* タイマーとボタンを横並びに配置 */
+#timer-button-container {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  margin-bottom: 20px;
+  gap: 20px; /* タイマーとボタンの間に隙間を追加 */
+}
+
+/* 小さい四角用のスタイル */
+#small-timer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 200px;
+  height: 30px;
+  background-color: #fff;
+  border: 2px solid #333;
+  border-radius: 8px;
+  margin-bottom: 10px; /* ボタンの上に配置されるための余白 */
+  padding: 5px;
+}
+
+/* 「ラップ」とタイマーのテキストを横並びにするためのスタイル */
+#small-timer-label {
+  margin-right: 15px; /* ラップの文字とタイマーの間に少しスペースを追加 */
+}
+
+#small-timer-time {
+  font-size: 28px; /* タイマー部分のフォントサイズを指定 */
+}
+
+/* タイマーのスタイル */
+#timer {
+  font-size: 72px;
+  margin-right: 20px;
+  display: inline-block;
+  padding: 20px 40px;
+  border: 2px solid #333;
+  background-color: #fff;
+  border-radius: 8px;
+}
+
+/* ボタンのスタイル */
+button {
+  font-size: 32px;
+  padding: 10px 20px;
+  margin: 5px;
+  border: none;
+  border-radius: 8px;
+  background-color: #333;
+  color: #fff;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+button:hover {
+  background-color: #555;
+}
+
+button:active {
+  background-color: #111;
+}
+
+#reset {
+  background-color: #e74c3c;
+}
+
+#reset:hover {
+  background-color: #c0392b;
+}
+
+/* 表とグラフとスライダーを横並びに配置 */
+#lap-graph-container {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 20px; /* 表、グラフ、スライダーの間に隙間を追加 */
+}
+
+/* スライダーを縦に配置 */
+#slider-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 20px;
+}
+
+#y-axis-slider {
+  writing-mode: bt-lr; /* スライダーを縦方向に表示 */
+  -webkit-appearance: slider-vertical; /* クロスブラウザ対応 */
+  width: 20px;
+  height: 280px;
+}
+
+#slider-value {
+  margin-top: 10px;
+  width: 60px;
+  height: 30px;
+  background-color: #fff;
+  border: 2px solid #333;
+  border-radius: 8px;
+  text-align: center;
+  font-size: 16px;
+  line-height: 30px; /* 高さとテキストの垂直揃え */
+}
+
+/* 表のスタイル */
+#lapTable {
+  margin: 20px auto;
+  border-collapse: collapse;
+  width: 100%;
+  max-width: 400px;
+}
+
+#lapTable th, #lapTable td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: center;
+}
+
+#lapTable th {
+  background-color: #333;
+  color: white;
+}
+
+#lapTable tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+/* グラフのスタイル */
+#lapGraph {
+  margin: 20px auto;
+  max-width: 600px;
+  width: 200%;
+  height: 500px;
+}
+
+/* タイム表示エリアのスタイル */
+#time-display {
+  margin-top: 20px;
+  padding: 20px;
+  border: 2px solid #333;
+  display: inline-block;
+  font-size: 24px;
+  font-weight: bold;
+  background-color: #fff;
+  border-radius: 8px;
+  width: 100%;           /* 幅を100%に */
+  max-width: 400px;       /* 幅の最大値を設定 */
+  margin-left: auto;      /* 右寄せ */
+  text-align: center;     /* テキストも中央寄せ */
+}

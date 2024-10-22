@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ラップタイム計測器</title>
+    <link rel="stylesheet" href="style3.css">
+</head>
+<body>
+    <div id="container">
+        <div id="timer-button-container">
+            <div id="timer">00:00.0</div>
+            <div id="button-container">
+                <div id="small-timer">
+                    <span id="small-timer-label">ラップ</span> <!-- 「ラップ」の文字 -->
+                    <span id="small-timer-time">00:00.0</span> <!-- タイマーの数字 -->
+                </div>
+                <button id="start">スタート</button>
+                <button id="stop" style="display:none;">ストップ</button>
+                <button id="lap">ラップ</button>
+                <button id="reset">リセット</button>
+            </div>
+        </div>
+        <div id="lap-graph-container">
+            <div id="lapTable-container">
+                <table id="lapTable">
+                    <thead>
+                        <tr>
+                            <th>周回数</th>
+                            <th>周回タイム</th>
+                            <th>ラップ</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+            <div id="lapGraph-container">
+                <canvas id="lapGraph" width="300" height="160"></canvas>
+                <div id="time-display">タイム表示</div>
+            </div>
+            <!-- レンジスライダーをグラフの右側に配置 -->
+            <div id="slider-container">
+                <input type="range" id="y-axis-slider" min="20" max="120" value="40" step="1" orient="vertical">
+                <input type="number" id="slider-value" min="20" max="120" value="40" step="1">
+            </div>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
