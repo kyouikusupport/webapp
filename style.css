@@ -1,0 +1,69 @@
+﻿table {
+    width: 1000px;
+    border-collapse: collapse;
+    margin: 20px auto; /* 表を中央に寄せる */
+    table-layout: fixed;
+}
+
+table, th, td {
+    border: 1px solid black;
+}
+
+th, td {
+    padding: 10px;
+    text-align: center;
+}
+
+th {
+    background-color: #f4f4f4;
+    position: relative;
+}
+
+button {
+    padding: 5px 10px;
+    margin-right: 5px;
+    font-size: 14px;
+    cursor: pointer;
+    width: 38px;
+}
+
+.button-group {
+    display: flex;
+    justify-content: center;
+}
+
+/* + と - ボタンのスタイル */
+.small-button {
+    font-size: 10px;
+    padding: 3px 5px;
+    width: 24px;
+    height: 24px;
+    margin-left: 5px;
+    cursor: pointer;
+}
+
+.small-button-left {
+    margin-right: 5px;
+}
+
+/* 結果表示の四角いボックス */
+#result-box {
+    width: 350px;
+    padding: 20px;
+    border: 2px solid black;
+    background-color: #fff;
+    margin-top: 20px;
+    position: relative;
+    left: 50%; /* 左寄せから50% */
+    transform: translateX(30%); /* 少し右に寄せる */
+    text-align: center;
+    font-size: 24px;
+    display: none; /* 初期状態で非表示 */
+}
+}
+
+/* タイトルを少し右に寄せる */
+.title {
+    text-align: left;
+    margin-left: 50px; /* 少し右側に余白を追加 */
+}

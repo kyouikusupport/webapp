@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>走り高跳びの記録表</title>
+    <link rel="stylesheet" href="style.css"> <!-- CSSファイルのリンク -->
+</head>
+<body>
+    <h1 class="title">走り高跳びの記録</h1>
+    
+    <table>
+        <!-- 1行目の飛び越える高さ -->
+        <tr>
+            <th>
+                <button class="small-button small-button-left" onclick="incrementSpecificHeight(1, -1)">-</button>
+                <span id="height1">65cm</span>
+                <button class="small-button" onclick="incrementSpecificHeight(1, 1)">+</button>
+            </th>
+            <th>
+                <button class="small-button small-button-left" onclick="incrementSpecificHeight(2, -1)">-</button>
+                <span id="height2">70cm</span>
+                <button class="small-button" onclick="incrementSpecificHeight(2, 1)">+</button>
+            </th>
+            <th>
+                <button class="small-button small-button-left" onclick="incrementSpecificHeight(3, -1)">-</button>
+                <span id="height3">75cm</span>
+                <button class="small-button" onclick="incrementSpecificHeight(3, 1)">+</button>
+            </th>
+            <th>
+                <button class="small-button small-button-left" onclick="incrementSpecificHeight(4, -1)">-</button>
+                <span id="height4">80cm</span>
+                <button class="small-button" onclick="incrementSpecificHeight(4, 1)">+</button>
+            </th>
+            <th>
+                <button class="small-button small-button-left" onclick="incrementSpecificHeight(5, -1)">-</button>
+                <span id="height5">85cm</span>
+                <button class="small-button" onclick="incrementSpecificHeight(5, 1)">+</button>
+            </th>
+            <th>
+                <button class="small-button small-button-left" onclick="incrementSpecificHeight(6, -1)">-</button>
+                <span id="height6">90cm</span>
+                <button class="small-button" onclick="incrementSpecificHeight(6, 1)">+</button>
+            </th>
+        </tr>
+
+        <!-- 結果ボタン (－ 〇 ✕ ボタン3つずつ) -->
+        <tr>
+            <td><div class="button-group" id="result1"><button onclick="toggleButton(this, 1)">－</button><button onclick="toggleButton(this, 1)">－</button><button onclick="toggleButton(this, 1)">－</button></div></td>
+            <td><div class="button-group" id="result2"><button onclick="toggleButton(this, 2)">－</button><button onclick="toggleButton(this, 2)">－</button><button onclick="toggleButton(this, 2)">－</button></div></td>
+            <td><div class="button-group" id="result3"><button onclick="toggleButton(this, 3)">－</button><button onclick="toggleButton(this, 3)">－</button><button onclick="toggleButton(this, 3)">－</button></div></td>
+            <td><div class="button-group" id="result4"><button onclick="toggleButton(this, 4)">－</button><button onclick="toggleButton(this, 4)">－</button><button onclick="toggleButton(this, 4)">－</button></div></td>
+            <td><div class="button-group" id="result5"><button onclick="toggleButton(this, 5)">－</button><button onclick="toggleButton(this, 5)">－</button><button onclick="toggleButton(this, 5)">－</button></div></td>
+            <td><div class="button-group" id="result6"><button onclick="toggleButton(this, 6)">－</button><button onclick="toggleButton(this, 6)">－</button><button onclick="toggleButton(this, 6)">－</button></div></td>
+        </tr>
+
+        <!-- 3行目の飛び越える高さ -->
+        <tr>
+            <th><button class="small-button small-button-left" onclick="incrementSpecificHeight(7, -1)">-</button><span id="height7">95cm</span><button class="small-button" onclick="incrementSpecificHeight(7, 1)">+</button></th>
+            <th><button class="small-button small-button-left" onclick="incrementSpecificHeight(8, -1)">-</button><span id="height8">100cm</span><button class="small-button" onclick="incrementSpecificHeight(8, 1)">+</button></th>
+            <th><button class="small-button small-button-left" onclick="incrementSpecificHeight(9, -1)">-</button><span id="height9">105cm</span><button class="small-button" onclick="incrementSpecificHeight(9, 1)">+</button></th>
+            <th><button class="small-button small-button-left" onclick="incrementSpecificHeight(10, -1)">-</button><span id="height10">110cm</span><button class="small-button" onclick="incrementSpecificHeight(10, 1)">+</button></th>
+            <th><button class="small-button small-button-left" onclick="incrementSpecificHeight(11, -1)">-</button><span id="height11">115cm</span><button class="small-button" onclick="incrementSpecificHeight(11, 1)">+</button></th>
+            <th><button class="small-button small-button-left" onclick="incrementSpecificHeight(12, -1)">-</button><span id="height12">120cm</span><button class="small-button" onclick="incrementSpecificHeight(12, 1)">+</button></th>
+        </tr>
+
+        <!-- 結果ボタン (3行目の－ 〇 ✕ ボタン3つずつ) -->
+        <tr>
+            <td><div class="button-group" id="result7"><button onclick="toggleButton(this, 7)">－</button><button onclick="toggleButton(this, 7)">－</button><button onclick="toggleButton(this, 7)">－</button></div></td>
+            <td><div class="button-group" id="result8"><button onclick="toggleButton(this, 8)">－</button><button onclick="toggleButton(this, 8)">－</button><button onclick="toggleButton(this, 8)">－</button></div></td>
+            <td><div class="button-group" id="result9"><button onclick="toggleButton(this, 9)">－</button><button onclick="toggleButton(this, 9)">－</button><button onclick="toggleButton(this, 9)">－</button></div></td>
+            <td><div class="button-group" id="result10"><button onclick="toggleButton(this, 10)">－</button><button onclick="toggleButton(this, 10)">－</button><button onclick="toggleButton(this, 10)">－</button></div></td>
+            <td><div class="button-group" id="result11"><button onclick="toggleButton(this, 11)">－</button><button onclick="toggleButton(this, 11)">－</button><button onclick="toggleButton(this, 11)">－</button></div></td>
+            <td><div class="button-group" id="result12"><button onclick="toggleButton(this, 12)">－</button><button onclick="toggleButton(this, 12)">－</button><button onclick="toggleButton(this, 12)">－</button></div></td>
+        </tr>
+    </table>
+
+    <!-- 結果を表示する四角を追加 -->
+    <div id="result-box">
+        記録: ここに表示されます。
+    </div>
+
+    <script src="script2.js"></script> <!-- JavaScriptファイルのリンク -->
+</body>
+</html>
