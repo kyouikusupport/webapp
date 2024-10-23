@@ -13,7 +13,7 @@ body {
   justify-content: center;
   align-items: flex-start;
   margin-bottom: 20px;
-  gap: 20px; /* タイマーとボタンの間に隙間を追加 */
+  gap: 20px;
 }
 
 /* 小さい四角用のスタイル */
@@ -26,17 +26,16 @@ body {
   background-color: #fff;
   border: 2px solid #333;
   border-radius: 8px;
-  margin-bottom: 10px; /* ボタンの上に配置されるための余白 */
+  margin-bottom: 10px;
   padding: 5px;
 }
 
-/* 「ラップ」とタイマーのテキストを横並びにするためのスタイル */
 #small-timer-label {
-  margin-right: 15px; /* ラップの文字とタイマーの間に少しスペースを追加 */
+  margin-right: 15px;
 }
 
 #small-timer-time {
-  font-size: 28px; /* タイマー部分のフォントサイズを指定 */
+  font-size: 28px;
 }
 
 /* タイマーのスタイル */
@@ -50,7 +49,6 @@ body {
   border-radius: 8px;
 }
 
-/* ボタンのスタイル */
 button {
   font-size: 32px;
   padding: 10px 20px;
@@ -84,10 +82,10 @@ button:active {
   display: flex;
   justify-content: center;
   align-items: flex-start;
-  gap: 20px; /* 表、グラフ、スライダーの間に隙間を追加 */
+  gap: 20px;
 }
 
-/* スライダーを縦に配置 */
+/* 縦スライダーのスタイル */
 #slider-container {
   display: flex;
   flex-direction: column;
@@ -96,8 +94,8 @@ button:active {
 }
 
 #y-axis-slider {
-  writing-mode: bt-lr; /* スライダーを縦方向に表示 */
-  -webkit-appearance: slider-vertical; /* クロスブラウザ対応 */
+  writing-mode: bt-lr;
+  -webkit-appearance: slider-vertical;
   width: 20px;
   height: 280px;
 }
@@ -111,7 +109,28 @@ button:active {
   border-radius: 8px;
   text-align: center;
   font-size: 16px;
-  line-height: 30px; /* 高さとテキストの垂直揃え */
+  line-height: 30px;
+}
+
+/* 横スライダーのスタイル */
+#lap-slider-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 10px;
+  position: relative;
+}
+
+#lap-slider {
+  margin-right: 10px;
+}
+
+#lap-slider-value {
+  width: 50px;
+  text-align: center;
+  border: 2px solid #333;
+  border-radius: 8px;
+  padding: 5px;
 }
 
 /* 表のスタイル */
@@ -155,8 +174,8 @@ button:active {
   font-weight: bold;
   background-color: #fff;
   border-radius: 8px;
-  width: 100%;           /* 幅を100%に */
-  max-width: 400px;       /* 幅の最大値を設定 */
-  margin-left: auto;      /* 右寄せ */
-  text-align: center;     /* テキストも中央寄せ */
+  width: 100%;
+  max-width: 400px;
+  margin-left: auto;
+  text-align: center;
 }
