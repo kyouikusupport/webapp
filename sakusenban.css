@@ -1,0 +1,125 @@
+﻿/* 全体の中央揃え用コンテナ */
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-color: #f0f0f0;
+}
+
+/* メインコンテナ */
+#mainContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+/* ポイント配置エリア */
+#strategyDisplay {
+    position: relative;
+    width: 600px; /* お好みの幅 */
+    height: 400px; /* お好みの高さ */
+    border: 2px solid #333;
+    background-color: #f9f9f9;
+    margin-bottom: 20px;
+}
+
+/* 縦棒のスタイル */
+.vertical-line {
+    position: absolute;
+    width: 2px;                  /* 縦棒の太さ */
+    height: 100%;                /* 描画エリアの高さに合わせる */
+    background-color: black;     /* 縦棒の色 */
+    top: 0;                      /* 縦棒を描画エリアの上端に合わせる */
+}
+
+/* ドラッグ可能なポイントのスタイル */
+.draggable {
+    border-radius: 50%; /* 丸いポイントにする */
+    cursor: grab;       /* ドラッグ可能なカーソル */
+}
+
+/* ポイントの番号ラベル */
+.draggable span {
+    position: absolute;
+    top: -10px;
+    left: 5px;
+    color: black;
+    font-size: 12px;
+}
+
+/* タブボタンのスタイル */
+#tabs {
+    display: flex;
+    gap: 5px;
+    margin-bottom: 10px;
+}
+
+.tab-button {
+    padding: 8px 12px;
+    background-color: #e0e0e0;
+    border: 1px solid #333;
+    cursor: pointer;
+    font-size: 14px;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+}
+
+.tab-button:hover {
+    background-color: #c0c0c0;
+}
+
+.tab-button.active {
+    background-color: #4CAF50;
+    color: white;
+}
+
+/* シーン切り替えボタンのスタイル */
+#sceneTabs {
+    display: flex;
+    gap: 5px;
+    margin-bottom: 10px;
+}
+
+#sceneTabs button {
+    padding: 6px 10px;
+    background-color: #e0e0e0;
+    border: 1px solid #333;
+    cursor: pointer;
+    font-size: 14px;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+}
+
+#sceneTabs button:hover {
+    background-color: #c0c0c0;
+}
+
+#sceneTabs button.active {
+    background-color: #2196F3;
+    color: white;
+}
+
+/* 操作ボタンのスタイル */
+button {
+    padding: 8px 12px;
+    margin-top: 10px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.3s;
+}
+
+button:hover {
+    background-color: #45a049;
+}
+
+button:active {
+    background-color: #3e8e41;
+}

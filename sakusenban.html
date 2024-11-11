@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>フラッグフットボール作戦管理</title>
+    <link rel="stylesheet" href="sakusenban.css">
+</head>
+<body>
+    <div id="mainContainer">
+        <h1>フラッグフットボール作戦管理</h1>
+
+        <!-- 作戦切り替えタブ -->
+        <div id="tabs">
+            <!-- 作戦のタブがここに動的に追加される -->
+        </div>
+
+        <!-- シーンの切り替えボタン -->
+        <div id="sceneTabs">
+            <button onclick="changeScene(1)">シーン 1</button>
+            <button onclick="changeScene(2)">シーン 2</button>
+            <button onclick="changeScene(3)">シーン 3</button>
+            <button onclick="changeScene(4)">シーン 4</button>
+            <button onclick="changeScene(5)">シーン 5</button>
+        </div>
+
+        <!-- ポイントの表示領域 -->
+        <div id="strategyDisplay">
+            <!-- 作戦内容の表示領域 -->
+        </div>
+
+        <!-- シーン1でのみ表示されるポイント追加ボタン -->
+        <div id="pointButtons" style="display: none; margin-top: 10px;">
+            <button onclick="addPoint('red')">赤いポイントを追加</button>
+            <button onclick="addPoint('blue')">青いポイントを追加</button>
+            <button onclick="addPoint('black')">黒いポイントを追加</button>
+        </div>
+
+        <!-- シーン2以降で表示される「前のシーンをコピー」ボタン -->
+        <div id="copyPreviousSceneButton" style="display: none; margin-top: 10px;">
+            <button onclick="copyPreviousScene()">前のシーンをコピー</button>
+        </div>
+
+        <!-- 操作ボタン -->
+        <button id="playPauseButton" onclick="togglePlayPause()">再生</button>
+        <button onclick="saveCurrentStrategy()">現在の作戦を保存</button>
+        <button onclick="addNewStrategy()">新しい作戦を追加</button>
+        <button onclick="deleteCurrentStrategy()">現在の作戦を削除</button>
+        <!-- 選択中の作戦リセットボタン -->
+        <button onclick="resetCurrentStrategy()">選択中の作戦をリセット</button>
+    </div>
+
+    <script src="sakusenban.js"></script>
+</body>
+
+</html>
