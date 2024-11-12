@@ -28,6 +28,19 @@ function toggleButton(button, index) {
     }
 }
 
+function calculateTarget() {
+    const height = parseFloat(document.getElementById("height").value);
+    const time = parseFloat(document.getElementById("time").value);
+    const difficulty = parseFloat(document.getElementById("difficulty").value);
+
+    if (!isNaN(height) && !isNaN(time) && !isNaN(difficulty)) {
+        const targetRecord = height * 0.5 - time * 10 + difficulty;
+        document.getElementById("targetRecord").textContent = `${targetRecord.toFixed(1)} cm`;
+    } else {
+        document.getElementById("targetRecord").textContent = "--";
+    }
+}
+
 function incrementSpecificHeight(index, value) {
     // 対応するセルの高さを取得して、値を変更
     const targetHeightSpan = document.getElementById(`height${index}`);
@@ -42,6 +55,68 @@ function incrementSpecificHeight(index, value) {
         const heightSpan = document.getElementById(`height${i}`);
         const updatedHeight = newHeight + (i - index) * 5;
         heightSpan.textContent = `${updatedHeight}cm`;
+    }
+}
+
+// 初期化時にローカルストレージからデータを読み込み
+window.onload = function() {
+    loadStoredData();
+    calculateTarget(); // 初期表示の目標記録を計算
+};
+
+function adjustValue(id, increment) {
+    if (id === "height") {
+        const heightSpan = document.getElementById("height");
+        let currentHeight = parseInt(heightSpan.textContent);
+        currentHeight = Math.max(100, Math.min(250, currentHeight + increment)); // 身長は100～250cmの範囲に制限
+        heightSpan.textContent = currentHeight;
+        localStorage.setItem("height", currentHeight); // ローカルストレージに保存
+    } else if (id === "time") {
+        const timeSpan = document.getElementById("time");
+        let currentTime = parseFloat(timeSpan.textContent);
+        currentTime = Math.max(5, Math.min(20, currentTime + increment)); // タイムは5～20秒の範囲に制限
+        currentTime = parseFloat(currentTime.toFixed(1)); // 小数点以下1桁に丸める
+        timeSpan.textContent = currentTime;
+        localStorage.setItem("time", currentTime); // ローカルストレージに保存
+    }
+    calculateTarget(); // 値が変わったので目標記録を再計算
+}
+
+function calculateTarget() {
+    const height = parseInt(document.getElementById("height").textContent);
+    const time = parseFloat(document.getElementById("time").textContent);
+    
+    // 選択された難易度のラジオボタンの値を取得
+    const difficulty = document.querySelector('input[name="difficulty"]:checked');
+    const difficultyValue = difficulty ? parseFloat(difficulty.value) : 0;
+
+    if (!isNaN(height) && !isNaN(time) && difficultyValue) {
+        const targetRecord = height * 0.5 - time * 10 + difficultyValue;
+        document.getElementById("targetRecord").textContent = `${targetRecord.toFixed(1)} cm`;
+    } else {
+        document.getElementById("targetRecord").textContent = "--";
+    }
+
+    // 難易度が選択されている場合にローカルストレージに保存
+    if (difficulty) {
+        localStorage.setItem("difficulty", difficulty.value);
+    }
+}
+
+// ローカルストレージからデータを読み込む関数
+function loadStoredData() {
+    const storedHeight = localStorage.getItem("height");
+    const storedTime = localStorage.getItem("time");
+    const storedDifficulty = localStorage.getItem("difficulty");
+
+    if (storedHeight !== null) {
+        document.getElementById("height").textContent = storedHeight;
+    }
+    if (storedTime !== null) {
+        document.getElementById("time").textContent = storedTime;
+    }
+    if (storedDifficulty !== null) {
+        document.querySelector(`input[name="difficulty"][value="${storedDifficulty}"]`).checked = true;
     }
 }
 

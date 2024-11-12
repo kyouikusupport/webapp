@@ -74,12 +74,40 @@
             <td><div class="button-group" id="result12"><button onclick="toggleButton(this, 12)">－</button><button onclick="toggleButton(this, 12)">－</button><button onclick="toggleButton(this, 12)">－</button></div></td>
         </tr>
     </table>
-
     <!-- 結果を表示する四角を追加 -->
     <div id="result-box">
         記録: ここに表示されます。
     </div>
-
+    
+    
+    <h2 class="title"><br>目標記録計算</h2>
+    <table>
+        <tr>
+            <th>身長 (cm)</th>
+            <th>50m走のタイム (秒)</th>
+            <th>難易度</th>
+            <th>目標記録</th>
+        </tr>
+        <tr>
+            <td>
+                <button onclick="adjustValue('height', -1)">-</button>
+                <span id="height">130</span> cm
+                <button onclick="adjustValue('height', 1)">+</button>
+            </td>
+            <td>
+                <button onclick="adjustValue('time', -0.1)">-</button>
+                <span id="time">10.3</span> 秒
+                <button onclick="adjustValue('time', 0.1)">+</button>
+            </td>
+            <td>
+                <label class="radio-option"><input type="radio" name="difficulty" value="120" onclick="calculateTarget()"> B </label>
+                <label class="radio-option"><input type="radio" name="difficulty" value="130" onclick="calculateTarget()"> A </label>
+                <label class="radio-option"><input type="radio" name="difficulty" value="140" onclick="calculateTarget()"> S </label>
+            </td>
+            <td><span id="targetRecord">--</span> </td>
+        </tr>
+    </table>
+    
     <script src="script2.js"></script> <!-- JavaScriptファイルのリンク -->
 </body>
 </html>
