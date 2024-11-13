@@ -30,11 +30,37 @@
         </div>
 
         <!-- シーン1でのみ表示されるポイント追加ボタン -->
-        <div id="pointButtons" style="display: none; margin-top: 10px;">
-            <button onclick="addPoint('red')">赤いポイントを追加</button>
-            <button onclick="addPoint('blue')">青いポイントを追加</button>
-            <button onclick="addPoint('black')">黒いポイントを追加</button>
-        </div>
+        <table id="pointControlTable" style="display: none;">
+            <tr>
+                <th>赤いポイント</th>
+                <th>青いポイント</th>
+                <th>黒いポイント</th>
+            </tr>
+            <tr>
+                <td>
+                    <div class="button-group">
+                        <button onclick="addPoint('red')">＋</button>
+                        <span class="point-label" style="color: red;">●</span>
+                        <button onclick="removePoint('red')">－</button>
+                    </div>
+                </td>
+                <td>
+                    <div class="button-group">
+                        <button onclick="addPoint('blue')">＋</button>
+                        <span class="point-label" style="color: blue;">●</span>
+                        <button onclick="removePoint('blue')">－</button>
+                    </div>
+                </td>
+                <td>
+                    <div class="button-group">
+                        <button onclick="addPoint('black')">＋</button>
+                        <span class="point-label" style="color: black;">●</span>
+                        <button onclick="removePoint('black')">－</button>
+                    </div>
+                </td>
+            </tr>
+        </table>
+
 
         <!-- シーン2以降で表示される「前のシーンをコピー」ボタン -->
         <div id="copyPreviousSceneButton" style="display: none; margin-top: 10px;">

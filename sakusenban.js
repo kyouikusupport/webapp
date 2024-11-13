@@ -57,12 +57,20 @@ function changeScene(sceneNumber) {
     highlightActiveScene(sceneNumber);
 
     // シーン1の場合のみポイント追加ボタンを表示
-    const pointButtons = document.getElementById('pointButtons');
-    pointButtons.style.display = sceneNumber === 1 ? 'block' : 'none';
+    //const pointButtons = document.getElementById('pointButtons');
+    //pointButtons.style.display = sceneNumber === 1 ? 'block' : 'none';
+    
+    // ポイント削除ボタンをシーン1の場合のみ表示
+    //const pointControlButtons = document.getElementById('pointControlButtons');
+    //pointControlButtons.style.display = sceneNumber === 1 ? 'block' : 'none';
 
     // シーン2以降の場合、「前のシーンをコピー」ボタンを表示
     const copyButton = document.getElementById('copyPreviousSceneButton');
     copyButton.style.display = sceneNumber > 1 ? 'block' : 'none';
+
+    // ポイント追加・削除のテーブルをシーン1の場合のみ表示
+    const pointControlTable = document.getElementById('pointControlTable');
+    pointControlTable.style.display = sceneNumber === 1 ? 'table' : 'none';
 }
 
 // 前のシーンを現在のシーンにコピーする
@@ -127,6 +135,16 @@ function displayScene() {
             pointElement.style.cursor = 'grabbing';
         });
 
+        // タッチ開始時にドラッグを開始
+        pointElement.addEventListener('touchstart', (e) => {
+            isDragging = true;
+            const touch = e.touches[0];
+            startX = touch.clientX - point.x;
+            startY = touch.clientY - point.y;
+            pointElement.style.cursor = 'grabbing';
+            e.preventDefault();
+        });
+
         // マウス移動時に位置を更新
         document.addEventListener('mousemove', (e) => {
             if (isDragging) {
@@ -134,6 +152,18 @@ function displayScene() {
                 const y = e.clientY - startY;
                 pointElement.style.left = `${x}px`;
                 pointElement.style.top = `${y}px`;
+            }
+        });
+
+        // タッチ移動時に位置を更新
+        document.addEventListener('touchmove', (e) => {
+            if (isDragging) {
+                const touch = e.touches[0];
+                const x = touch.clientX - startX;
+                const y = touch.clientY - startY;
+                pointElement.style.left = `${x}px`;
+                pointElement.style.top = `${y}px`;
+                e.preventDefault();
             }
         });
 
@@ -148,8 +178,44 @@ function displayScene() {
             }
         });
 
+        // タッチ終了時にドラッグを終了
+        document.addEventListener('touchend', (e) => {
+            if (isDragging) {
+                isDragging = false;
+                const touch = e.changedTouches[0];
+                const x = touch.clientX - startX;
+                const y = touch.clientY - startY;
+                updatePointPosition(index, x, y); // データ上の位置も更新
+                pointElement.style.cursor = 'grab';
+            }
+        });
+
         display.appendChild(pointElement);
     });
+}
+
+function removePoint(color) {
+    const currentSceneData = strategies[currentStrategyIndex][0]; // シーン1のデータを取得
+
+    // 指定された色のポイントのうち、一番番号が大きいポイントを探す
+    let maxIndex = -1;
+    for (let i = currentSceneData.length - 1; i >= 0; i--) {
+        if (currentSceneData[i].color === color) {
+            maxIndex = i;
+            break; // 最後に追加された（番号が大きい）ポイントが見つかったらループを抜ける
+        }
+    }
+
+    // 見つかった場合にそのポイントを削除
+    if (maxIndex !== -1) {
+        currentSceneData.splice(maxIndex, 1);
+
+        // データをローカルストレージに保存
+        localStorage.setItem('strategiesData', JSON.stringify(strategies));
+
+        // 表示を更新
+        displayScene();
+    }
 }
 
 // 縦棒を等間隔で2本追加する関数
@@ -175,18 +241,54 @@ function updatePointPosition(index, x, y) {
 
 // ポイントを追加
 function addPoint(color) {
-    let newPoint = { x: 50, y: 50, color: color };
+    const currentSceneData = strategies[currentStrategyIndex][currentScene];
 
-    // 色ごとに番号を付ける
+    // 色ごとに現在のポイント数を数えて次の番号を決定
+    let newNumber;
     if (color === 'red') {
-        newPoint.number = redPointCounter++;
-        localStorage.setItem('redPointCounter', redPointCounter); // 赤のカウンターを保存
+        const redPoints = currentSceneData.filter(point => point.color === 'red');
+        newNumber = redPoints.length + 1;
     } else if (color === 'blue') {
-        newPoint.number = bluePointCounter++;
-        localStorage.setItem('bluePointCounter', bluePointCounter); // 青のカウンターを保存
+        const bluePoints = currentSceneData.filter(point => point.color === 'blue');
+        newNumber = bluePoints.length + 1;
+    } else {
+        newNumber = null; // 黒のポイントは番号なし
     }
 
-    strategies[currentStrategyIndex][currentScene].push(newPoint);
+    // 色ごとの初期位置設定と位置調整
+    let newPoint;
+    if (color === 'red') {
+        const redPoints = currentSceneData.filter(point => point.color === 'red');
+        if (redPoints.length > 0) {
+            const lastRedPoint = redPoints[redPoints.length - 1];
+            newPoint = { x: lastRedPoint.x + 30, y: lastRedPoint.y + 30, color: color, number: newNumber };
+        } else {
+            newPoint = { x: 50, y: 50, color: color, number: newNumber }; // 初期位置
+        }
+    } else if (color === 'blue') {
+        const bluePoints = currentSceneData.filter(point => point.color === 'blue');
+        if (bluePoints.length > 0) {
+            const lastBluePoint = bluePoints[bluePoints.length - 1];
+            newPoint = { x: lastBluePoint.x + 30, y: lastBluePoint.y + 30, color: color, number: newNumber };
+        } else {
+            newPoint = { x: 250, y: 50, color: color, number: newNumber }; // 初期位置
+        }
+    } else {
+        const blackPoints = currentSceneData.filter(point => point.color === 'black');
+        if (blackPoints.length > 0) {
+            const lastBlackPoint = blackPoints[blackPoints.length - 1];
+            newPoint = { x: lastBlackPoint.x + 30, y: lastBlackPoint.y + 30, color: color, number: newNumber };
+        } else {
+            newPoint = { x: 450, y: 50, color: color, number: newNumber }; // 初期位置
+        }
+    }
+
+    // 現在のシーンにポイントを追加
+    currentSceneData.push(newPoint);
+
+    // データをローカルストレージに保存
+    localStorage.setItem('strategiesData', JSON.stringify(strategies));
+
     displayScene();
 }
 

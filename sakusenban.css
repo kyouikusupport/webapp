@@ -27,6 +27,57 @@ body {
     margin-bottom: 20px;
 }
 
+#pointControlTable {
+    width: auto;
+    margin-top: 10px;
+    border-collapse: collapse;
+    text-align: center; /* テーブル全体を中央揃え */
+}
+
+#pointControlTable th, #pointControlTable td {
+    padding: 10px;
+    border: 1px solid #ccc;
+    text-align: center; /* 各セル内を中央揃え */
+}
+
+#pointControlTable th {
+    font-weight: bold;
+    color: #333;
+}
+
+.button-group {
+    display: flex;
+    align-items: center;
+    justify-content: center; /* ボタンとラベルを中央に揃える */
+    gap: 5px; /* ボタン間のスペース */
+}
+
+#pointControlTable button {
+    width: 30px;
+    height: 30px;
+    font-size: 18px;
+    font-weight: bold;
+    color: #333;
+    background-color: #e0e0e0;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+}
+
+#pointControlTable button:hover {
+    background-color: #c0c0c0;
+}
+
+.point-label {
+    font-size: 35px;
+    line-height: 1; /* 縦方向の中央揃えを調整 */
+}
+
 /* 縦棒のスタイル */
 .vertical-line {
     position: absolute;
