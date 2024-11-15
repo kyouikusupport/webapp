@@ -15,6 +15,11 @@
             <!-- 作戦のタブがここに動的に追加される -->
         </div>
 
+        <!-- ポイントの表示領域 -->
+        <div id="strategyDisplay">
+            <!-- 作戦内容の表示領域 -->
+        </div>
+
         <!-- シーンの切り替えボタン -->
         <div id="sceneTabs">
             <button onclick="changeScene(1)">シーン 1</button>
@@ -24,56 +29,63 @@
             <button onclick="changeScene(5)">シーン 5</button>
         </div>
 
-        <!-- ポイントの表示領域 -->
-        <div id="strategyDisplay">
-            <!-- 作戦内容の表示領域 -->
+        <!-- ポイント操作ウインドウ -->
+        <div id="pointControlWindow" class="window">
+            <div class="window-header">
+                <span>ポイント操作</span>
+                <button id="closeWindowButton" class="close-button">×</button>
+            </div>
+            <div class="window-body">
+                <table id="pointControlTable">
+                    <tr>
+                        <td>
+                            <div class="button-group">
+                                <button onclick="addPoint('red')">＋</button>
+                                <span class="point-label" style="color: red;">●</span>
+                                <button onclick="removePoint('red')">－</button>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="button-group">
+                                <button onclick="addPoint('blue')">＋</button>
+                                <span class="point-label" style="color: blue;">●</span>
+                                <button onclick="removePoint('blue')">－</button>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="button-group">
+                                <button onclick="addPoint('black')">＋</button>
+                                <span class="point-label" style="color: black;">●</span>
+                                <button onclick="removePoint('black')">－</button>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+                <!-- シーン2以降で表示される「前のシーンをコピー」ボタン -->
+                <div id="copyPreviousSceneButton" style="display: none; margin-top: 10px;">
+                    <button onclick="copyPreviousScene()">前のシーンをコピー</button>
+                </div>
+            </div>
         </div>
 
-        <!-- シーン1でのみ表示されるポイント追加ボタン -->
-        <table id="pointControlTable" style="display: none;">
-            <tr>
-                <th>赤いポイント</th>
-                <th>青いポイント</th>
-                <th>黒いポイント</th>
-            </tr>
-            <tr>
-                <td>
-                    <div class="button-group">
-                        <button onclick="addPoint('red')">＋</button>
-                        <span class="point-label" style="color: red;">●</span>
-                        <button onclick="removePoint('red')">－</button>
-                    </div>
-                </td>
-                <td>
-                    <div class="button-group">
-                        <button onclick="addPoint('blue')">＋</button>
-                        <span class="point-label" style="color: blue;">●</span>
-                        <button onclick="removePoint('blue')">－</button>
-                    </div>
-                </td>
-                <td>
-                    <div class="button-group">
-                        <button onclick="addPoint('black')">＋</button>
-                        <span class="point-label" style="color: black;">●</span>
-                        <button onclick="removePoint('black')">－</button>
-                    </div>
-                </td>
-            </tr>
-        </table>
-
-
-        <!-- シーン2以降で表示される「前のシーンをコピー」ボタン -->
-        <div id="copyPreviousSceneButton" style="display: none; margin-top: 10px;">
-            <button onclick="copyPreviousScene()">前のシーンをコピー</button>
-        </div>
 
         <!-- 操作ボタン -->
-        <button id="playPauseButton" onclick="togglePlayPause()">再生</button>
-        <button onclick="saveCurrentStrategy()">現在の作戦を保存</button>
-        <button onclick="addNewStrategy()">新しい作戦を追加</button>
-        <button onclick="deleteCurrentStrategy()">現在の作戦を削除</button>
-        <!-- 選択中の作戦リセットボタン -->
-        <button onclick="resetCurrentStrategy()">選択中の作戦をリセット</button>
+        <!-- 操作ボタンのテーブル -->
+        <table id="operationControlTable">
+            <tr>
+                <td> 　　　　 </td>
+                <td><button id="playPauseButton" onclick="togglePlayPause()">再生</button></td>
+                <td><button onclick="resetCurrentStrategy()">リセット</button></td>
+                <td><button onclick="deleteCurrentStrategy()">削除</button></td>
+                <td><button onclick="saveCurrentStrategy()">保存</button></td>
+                <td><button onclick="addNewStrategy()">追加</button></td>
+                <td><button id="togglePointControlButton" onclick="togglePointControlWindow()">ポイント操作</button></td>
+                <td><label>
+                    　縦ラインの数:
+                    <input id="verticalLineCountInput" type="number" value="2" min="1" max="10" style="width: 50px; margin-left: 10px;">
+                </label></td>
+            </tr>
+        </table>
     </div>
 
     <script src="sakusenban.js"></script>

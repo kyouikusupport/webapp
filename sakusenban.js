@@ -16,9 +16,30 @@ window.onload = () => {
     } else {
         strategies = [[[], [], [], [], []]]; 
     }
+    
     updateTabs();
     loadStrategy(0); // 最初の作戦をロード
     changeScene(1); // 最初のシーンを表示
+
+    // ウインドウの初期位置を右下に設定
+    const pointControlWindow = document.getElementById('pointControlWindow');
+    if (pointControlWindow) {
+        pointControlWindow.style.bottom = '10px'; // 画面下から10px
+        pointControlWindow.style.left = '10px'; // 画面右から10px
+        pointControlWindow.style.position = 'fixed'; // 固定位置
+    }
+     // 縦ラインの数を復元
+    const savedLineCount = localStorage.getItem("verticalLineCount");
+    const lineCountInput = document.getElementById("verticalLineCountInput");
+    if (savedLineCount) {
+        lineCountInput.value = savedLineCount;
+    } else {
+        lineCountInput.value = 2; // デフォルト値
+    }
+    
+    const container = document.getElementById("strategyDisplay");
+    addVerticalLines(container); // 初期表示の縦ラインを描画
+    
 };
 
 // 作戦のタブを更新
@@ -37,40 +58,44 @@ function updateTabs() {
 
 // 作戦をロード
 function loadStrategy(index) {
-    currentStrategyIndex = index;
-    highlightActiveTab();
-    changeScene(currentScene + 1);
+    currentStrategyIndex = index; // 選択した作戦のインデックスを更新
+    highlightActiveTab();         // 選択されたタブを強調表示
+    changeScene(1);               // 常にシーン1を表示
 }
 
 // シーンの切り替え
 function changeScene(sceneNumber) {
     currentScene = sceneNumber - 1;
+    const currentStrategy = strategies[currentStrategyIndex];
+    const pointControlWindow = document.getElementById('pointControlWindow');
+    const pointControlTable = document.getElementById('pointControlTable');
+    const copyPreviousSceneButton = document.getElementById('copyPreviousSceneButton');
 
     // シーンデータが未定義の場合、前のシーンデータをコピー
-    if (!strategies[currentStrategyIndex][currentScene]) {
-        strategies[currentStrategyIndex][currentScene] = strategies[currentStrategyIndex][currentScene - 1]
-            ? JSON.parse(JSON.stringify(strategies[currentStrategyIndex][currentScene - 1])) // 深いコピー
+    if (!currentStrategy[currentScene]) {
+        currentStrategy[currentScene] = currentStrategy[currentScene - 1]
+            ? JSON.parse(JSON.stringify(currentStrategy[currentScene - 1]))
             : [];
+    }
+
+    // シーン2以降でポイントが1つもない場合、自動で前のシーンをコピー
+    if (currentScene > 0 && currentStrategy[currentScene].length === 0) {
+        copyPreviousScene(); // 前のシーンをコピー
+    }
+
+    // シーンごとのウインドウ内容の切り替え
+    if (sceneNumber === 1) {
+        pointControlTable.style.display = 'block'; // シーン1ではポイント追加テーブルを表示
+        copyPreviousSceneButton.style.display = 'none'; // 「前のシーンをコピー」ボタンは非表示
+        pointControlWindow.style.display = 'block'; // ウインドウを表示
+    } else {
+        pointControlTable.style.display = 'none'; // ポイント追加テーブルを非表示
+        copyPreviousSceneButton.style.display = 'block'; // 「前のシーンをコピー」ボタンを表示
+        pointControlWindow.style.display = 'block'; // ウインドウを表示
     }
 
     displayScene();
     highlightActiveScene(sceneNumber);
-
-    // シーン1の場合のみポイント追加ボタンを表示
-    //const pointButtons = document.getElementById('pointButtons');
-    //pointButtons.style.display = sceneNumber === 1 ? 'block' : 'none';
-    
-    // ポイント削除ボタンをシーン1の場合のみ表示
-    //const pointControlButtons = document.getElementById('pointControlButtons');
-    //pointControlButtons.style.display = sceneNumber === 1 ? 'block' : 'none';
-
-    // シーン2以降の場合、「前のシーンをコピー」ボタンを表示
-    const copyButton = document.getElementById('copyPreviousSceneButton');
-    copyButton.style.display = sceneNumber > 1 ? 'block' : 'none';
-
-    // ポイント追加・削除のテーブルをシーン1の場合のみ表示
-    const pointControlTable = document.getElementById('pointControlTable');
-    pointControlTable.style.display = sceneNumber === 1 ? 'table' : 'none';
 }
 
 // 前のシーンを現在のシーンにコピーする
@@ -195,41 +220,71 @@ function displayScene() {
 }
 
 function removePoint(color) {
-    const currentSceneData = strategies[currentStrategyIndex][0]; // シーン1のデータを取得
+    // 現在の作戦の全シーンを取得
+    const currentStrategy = strategies[currentStrategyIndex];
 
-    // 指定された色のポイントのうち、一番番号が大きいポイントを探す
-    let maxIndex = -1;
-    for (let i = currentSceneData.length - 1; i >= 0; i--) {
-        if (currentSceneData[i].color === color) {
-            maxIndex = i;
-            break; // 最後に追加された（番号が大きい）ポイントが見つかったらループを抜ける
+    for (let sceneIndex = 0; sceneIndex < currentStrategy.length; sceneIndex++) {
+        const sceneData = currentStrategy[sceneIndex];
+
+        // 指定された色のポイントのうち、一番番号が大きいポイントを探す
+        let maxIndex = -1;
+        for (let i = sceneData.length - 1; i >= 0; i--) {
+            if (sceneData[i].color === color) {
+                maxIndex = i;
+                break; // 最後に追加された（番号が大きい）ポイントが見つかったらループを抜ける
+            }
+        }
+
+        // 見つかった場合にそのポイントを削除
+        if (maxIndex !== -1) {
+            sceneData.splice(maxIndex, 1);
         }
     }
 
-    // 見つかった場合にそのポイントを削除
-    if (maxIndex !== -1) {
-        currentSceneData.splice(maxIndex, 1);
+    // データをローカルストレージに保存
+    localStorage.setItem('strategiesData', JSON.stringify(strategies));
 
-        // データをローカルストレージに保存
-        localStorage.setItem('strategiesData', JSON.stringify(strategies));
-
-        // 表示を更新
-        displayScene();
-    }
+    // 表示を更新
+    displayScene();
 }
 
 // 縦棒を等間隔で2本追加する関数
 function addVerticalLines(container) {
-    const lineCount = 2;
+    // 既存の縦棒だけを削除
+    const existingLines = container.querySelectorAll('.vertical-line');
+    existingLines.forEach(line => line.remove());
+
+    // 縦ライン数を取得
+    const lineCountInput = document.getElementById("verticalLineCountInput");
+    const lineCount = parseInt(lineCountInput.value) || 2;
+
     const containerWidth = container.offsetWidth;
     const interval = containerWidth / (lineCount + 1);
 
+    // 新しい縦ラインを追加
     for (let i = 1; i <= lineCount; i++) {
         const line = document.createElement('div');
         line.className = 'vertical-line';
         line.style.left = `${interval * i}px`; // 等間隔に配置
         container.appendChild(line);
     }
+}
+
+document.getElementById("verticalLineCountInput").addEventListener("input", () => {
+    const container = document.getElementById("strategyDisplay");
+    addVerticalLines(container); // 縦ラインを再描画
+});
+
+document.getElementById("verticalLineCountInput").addEventListener("input", (event) => {
+    const lineCount = event.target.value;
+    saveVerticalLineCount(lineCount); // 保存
+    const container = document.getElementById("strategyDisplay");
+    addVerticalLines(container); // 縦ラインを再描画
+    displayScene(); // ポイントを再描画
+});
+
+function saveVerticalLineCount(count) {
+    localStorage.setItem("verticalLineCount", count);
 }
 
 // ポイント位置の更新
@@ -263,7 +318,7 @@ function addPoint(color) {
             const lastRedPoint = redPoints[redPoints.length - 1];
             newPoint = { x: lastRedPoint.x + 30, y: lastRedPoint.y + 30, color: color, number: newNumber };
         } else {
-            newPoint = { x: 50, y: 50, color: color, number: newNumber }; // 初期位置
+            newPoint = { x: 50, y: 150, color: color, number: newNumber }; // 初期位置
         }
     } else if (color === 'blue') {
         const bluePoints = currentSceneData.filter(point => point.color === 'blue');
@@ -271,7 +326,7 @@ function addPoint(color) {
             const lastBluePoint = bluePoints[bluePoints.length - 1];
             newPoint = { x: lastBluePoint.x + 30, y: lastBluePoint.y + 30, color: color, number: newNumber };
         } else {
-            newPoint = { x: 250, y: 50, color: color, number: newNumber }; // 初期位置
+            newPoint = { x: 250, y: 150, color: color, number: newNumber }; // 初期位置
         }
     } else {
         const blackPoints = currentSceneData.filter(point => point.color === 'black');
@@ -279,18 +334,27 @@ function addPoint(color) {
             const lastBlackPoint = blackPoints[blackPoints.length - 1];
             newPoint = { x: lastBlackPoint.x + 30, y: lastBlackPoint.y + 30, color: color, number: newNumber };
         } else {
-            newPoint = { x: 450, y: 50, color: color, number: newNumber }; // 初期位置
+            newPoint = { x: 450, y: 150, color: color, number: newNumber }; // 初期位置
         }
     }
 
     // 現在のシーンにポイントを追加
     currentSceneData.push(newPoint);
 
+    // 他のシーンにも同じポイントを追加
+    for (let i = 0; i < strategies[currentStrategyIndex].length; i++) {
+        if (i !== currentScene && strategies[currentStrategyIndex][i].length > 0) {
+            const sceneData = strategies[currentStrategyIndex][i];
+            sceneData.push(JSON.parse(JSON.stringify(newPoint))); // 深いコピーで追加
+        }
+    }
+
     // データをローカルストレージに保存
     localStorage.setItem('strategiesData', JSON.stringify(strategies));
 
     displayScene();
 }
+
 
 // 現在の作戦を保存
 function saveCurrentStrategy() {
@@ -300,20 +364,39 @@ function saveCurrentStrategy() {
 
 // 新しい作戦を追加
 function addNewStrategy() {
-    const newStrategy = [[], [], [], [], []];
-    strategies.push(newStrategy);
+    const newStrategy = [[], [], [], [], []]; // 新しい作戦を初期化
+    strategies.push(newStrategy); // 作戦リストに追加
+
+    // 新しい作戦を選択
     currentStrategyIndex = strategies.length - 1;
+
+    // ローカルストレージに保存
+    localStorage.setItem('strategiesData', JSON.stringify(strategies));
+
+    // タブを更新
     updateTabs();
-    saveCurrentStrategy();
+
+    // 新しい作戦のシーン1を自動で選択
+    changeScene(1);
 }
 
 // 現在の作戦を削除
 function deleteCurrentStrategy() {
     if (strategies.length > 1) {
+        // 現在の作戦を削除
         strategies.splice(currentStrategyIndex, 1);
-        currentStrategyIndex = 0;
+
+        // 作戦インデックスを前に戻す（削除前の作戦）
+        currentStrategyIndex = Math.max(0, currentStrategyIndex - 1);
+
+        // ローカルストレージに保存
+        localStorage.setItem('strategiesData', JSON.stringify(strategies));
+
+        // タブを更新
         updateTabs();
-        saveCurrentStrategy();
+
+        // シーン1を自動で選択
+        changeScene(1);
     } else {
         alert("最低1つの作戦が必要です");
     }
@@ -348,14 +431,19 @@ function playAnimation() {
         const duration = 1000; // 1秒で次のフレームに移行
         const startTime = performance.now();
 
+        // ポイントの番号順に並べる
+        const sortedCurrentFrame = [...currentFrame].sort((a, b) => (a.number || 0) - (b.number || 0));
+        const sortedNextFrame = [...nextFrame].sort((a, b) => (a.number || 0) - (b.number || 0));
+
         function smoothTransition(timestamp) {
             if (!isPlaying) return; // 停止ボタンが押されたら停止
 
             const elapsed = timestamp - startTime;
             const progress = Math.min(elapsed / duration, 1);
 
-            const interpolatedFrame = currentFrame.map((point, index) => {
-                const nextPoint = nextFrame[index] || point;
+            // 番号順に対応するポイントを比較しながら計算
+            const interpolatedFrame = sortedCurrentFrame.map((point, index) => {
+                const nextPoint = sortedNextFrame[index] || point;
                 return {
                     x: point.x + (nextPoint.x - point.x) * progress,
                     y: point.y + (nextPoint.y - point.y) * progress,
@@ -385,6 +473,7 @@ function playAnimation() {
     animate();
 }
 
+
 // 選択中の作戦だけをリセット
 function resetCurrentStrategy() {
     // 選択中の作戦をリセット
@@ -402,6 +491,9 @@ function resetCurrentStrategy() {
     // 表示を更新
     displayScene();
     alert("選択中の作戦がリセットされました");
+
+    // シーン1を自動で選択
+    changeScene(1);
 }
 
 // 特定のフレームを表示
@@ -425,12 +517,15 @@ function displayFrame(frame) {
         if (point.color === 'red') {
             pointElement.style.width = '25px';
             pointElement.style.height = '25px';
+            pointElement.style.zIndex = '2'; // 赤ポイントのZインデックス
         } else if (point.color === 'blue') {
             pointElement.style.width = '25px';
             pointElement.style.height = '25px';
+            pointElement.style.zIndex = '1'; // 青ポイントのZインデックス
         } else {
             pointElement.style.width = '15px';
             pointElement.style.height = '15px';
+            pointElement.style.zIndex = '3'; // 黒ポイントのZインデックス
         }
 
         // 番号を表示するラベルを追加
@@ -446,6 +541,7 @@ function displayFrame(frame) {
         display.appendChild(pointElement);
     });
 }
+
 // アクティブな作戦タブを強調
 function highlightActiveTab() {
     document.querySelectorAll('#tabs .tab-button').forEach((button, index) => {
@@ -459,3 +555,52 @@ function highlightActiveScene(sceneNumber) {
         button.classList.toggle('active', index === sceneNumber - 1);
     });
 }
+
+// ページを離れる直前にデータを保存
+window.onbeforeunload = () => {
+    localStorage.setItem('strategiesData', JSON.stringify(strategies));
+};
+
+
+// ウインドウの表示・非表示を切り替える
+function togglePointControlWindow() {
+    const windowElement = document.getElementById('pointControlWindow');
+    if (windowElement.style.display === 'none' || !windowElement.style.display) {
+        windowElement.style.display = 'block';
+    } else {
+        windowElement.style.display = 'none';
+    }
+}
+
+// ウインドウを閉じる
+document.getElementById('closeWindowButton').addEventListener('click', () => {
+    document.getElementById('pointControlWindow').style.display = 'none';
+});
+
+// ウインドウをドラッグで移動可能にする
+function makeWindowDraggable(windowId) {
+    const windowElement = document.getElementById(windowId);
+    const header = windowElement.querySelector('.window-header');
+    let offsetX = 0, offsetY = 0, isDragging = false;
+
+    header.addEventListener('mousedown', (e) => {
+        isDragging = true;
+        offsetX = e.clientX - windowElement.offsetLeft;
+        offsetY = e.clientY - windowElement.offsetTop;
+    });
+
+    document.addEventListener('mousemove', (e) => {
+        if (isDragging) {
+            windowElement.style.left = `${e.clientX - offsetX}px`;
+            windowElement.style.top = `${e.clientY - offsetY}px`;
+        }
+    });
+
+    document.addEventListener('mouseup', () => {
+        isDragging = false;
+    });
+}
+
+// ドラッグ機能を有効化
+makeWindowDraggable('pointControlWindow');
+

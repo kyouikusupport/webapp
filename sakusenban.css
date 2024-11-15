@@ -1,12 +1,13 @@
 ﻿/* 全体の中央揃え用コンテナ */
 body {
     display: flex;
-    justify-content: center;
-    align-items: center;
+    justify-content: center; /* 左右を中央に配置 */
+    align-items: flex-start; /* 上詰めに配置 */
     min-height: 100vh;
     margin: 0;
     font-family: Arial, sans-serif;
     background-color: #f0f0f0;
+    padding-top: 20px; /* 上部に余白を追加する場合（任意） */
 }
 
 /* メインコンテナ */
@@ -20,8 +21,8 @@ body {
 /* ポイント配置エリア */
 #strategyDisplay {
     position: relative;
-    width: 600px; /* お好みの幅 */
-    height: 400px; /* お好みの高さ */
+    width: 800px; /* お好みの幅 */
+    height: 500px; /* お好みの高さ */
     border: 2px solid #333;
     background-color: #f9f9f9;
     margin-bottom: 20px;
@@ -91,6 +92,21 @@ body {
 .draggable {
     border-radius: 50%; /* 丸いポイントにする */
     cursor: grab;       /* ドラッグ可能なカーソル */
+    position: relative; /* 疑似要素の基準を設定 */
+    z-index: 1; /* ポイントが他の要素より前面に表示される */
+}
+
+/* ポイントのクリック範囲を拡張 */
+.draggable::before {
+    content: '';
+    position: absolute;
+    top: -10px; /* 上下左右に10px分クリック範囲を広げる */
+    left: -10px;
+    right: -10px;
+    bottom: -10px;
+    background-color: transparent; /* 透明にして表示に影響を与えない */
+    pointer-events: all; /* 範囲内のクリックイベントを有効化 */
+    z-index: -1; /* 元のポイントが上に表示されるように調整 */
 }
 
 /* ポイントの番号ラベル */
@@ -173,4 +189,74 @@ button:hover {
 
 button:active {
     background-color: #3e8e41;
+}
+
+/* ウインドウ全体 */
+.window {
+    position: absolute;
+    top: 20%;
+    left: 30%;
+    width: 380px;
+    border: 1px solid #333;
+    border-radius: 8px;
+    background-color: white;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+    display: none; /* 初期状態で非表示 */
+}
+
+/* ウインドウヘッダー */
+.window-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 2px;
+    background-color: #4CAF50;
+    color: white;
+    border-bottom: 1px solid #333;
+    cursor: move; /* ヘッダー部分を掴んで移動可能 */
+}
+
+/* ウインドウボディ */
+.window-body {
+    padding: 10px;
+}
+
+/* ウインドウを閉じるボタン */
+.close-button {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 24px;
+    cursor: pointer;
+}
+
+/* トグルボタン */
+#togglePointControlButton {
+    margin-left: 10px;
+    padding: 8px 12px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+#togglePointControlButton:hover {
+    background-color: #45a049;
+}
+
+/* ポイント操作ウインドウ */
+#pointControlWindow {
+    position: fixed;
+    bottom: 10px;
+    right: 10px;
+    width: 360px; /* 適切な幅 */
+    max-height: 160px; /* 最大高さを設定 */
+    background-color: #fff; /* 背景色 */
+    border: 1px solid #ccc; /* 枠線 */
+    border-radius: 8px; /* 角を丸く */
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); /* ボックスシャドウ */
+    z-index: 1000; /* 他の要素より前面に表示 */
 }
