@@ -583,24 +583,53 @@ function makeWindowDraggable(windowId) {
     const header = windowElement.querySelector('.window-header');
     let offsetX = 0, offsetY = 0, isDragging = false;
 
+    // マウスイベント: ドラッグ開始
     header.addEventListener('mousedown', (e) => {
         isDragging = true;
         offsetX = e.clientX - windowElement.offsetLeft;
         offsetY = e.clientY - windowElement.offsetTop;
     });
 
+    // タッチイベント: ドラッグ開始
+    header.addEventListener('touchstart', (e) => {
+        isDragging = true;
+        const touch = e.touches[0];
+        offsetX = touch.clientX - windowElement.offsetLeft;
+        offsetY = touch.clientY - windowElement.offsetTop;
+    });
+
+    // マウス移動でウインドウを移動
     document.addEventListener('mousemove', (e) => {
         if (isDragging) {
-            windowElement.style.left = `${e.clientX - offsetX}px`;
-            windowElement.style.top = `${e.clientY - offsetY}px`;
+            const newX = e.clientX - offsetX;
+            const newY = e.clientY - offsetY;
+            windowElement.style.left = `${newX}px`;
+            windowElement.style.top = `${newY}px`;
         }
     });
 
+    // タッチ移動でウインドウを移動
+    document.addEventListener('touchmove', (e) => {
+        if (isDragging) {
+            const touch = e.touches[0];
+            const newX = touch.clientX - offsetX;
+            const newY = touch.clientY - offsetY;
+            windowElement.style.left = `${newX}px`;
+            windowElement.style.top = `${newY}px`;
+            e.preventDefault(); // タッチスクロールを防止
+        }
+    });
+
+    // マウスボタンを離したときにドラッグを終了
     document.addEventListener('mouseup', () => {
+        isDragging = false;
+    });
+
+    // タッチ終了時にドラッグを終了
+    document.addEventListener('touchend', () => {
         isDragging = false;
     });
 }
 
 // ドラッグ機能を有効化
 makeWindowDraggable('pointControlWindow');
-
