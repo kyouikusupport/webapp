@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>たからはこびゲームシート</title>
+    <link rel="stylesheet" href="sakusenban2.css">
+</head>
+<body>
+    <div id="mainContainer">
+        <h1>たからはこびゲームシート</h1>
+
+        <!-- 作戦切り替えタブ -->
+        <div id="tabs">
+            <!-- 作戦のタブがここに動的に追加される -->
+        </div>
+
+        <!-- ポイントの表示領域 -->
+        <div id="strategyDisplay">
+            <!-- 作戦内容の表示領域 -->
+        </div>
+
+        <!-- シーンの切り替えボタン -->
+        <div id="sceneTabs">
+            <button onclick="changeScene(1)">スタート</button>
+            <button onclick="changeScene(2)">１びょうご</button>
+            <button onclick="changeScene(3)">２びょうご</button>
+            <button onclick="changeScene(4)">３びょうご</button>
+            <button onclick="changeScene(5)">４びょうご</button>
+        </div>
+
+        <!-- ポイント操作ウインドウ -->
+        <div id="pointControlWindow" class="window">
+            <div class="window-header">
+                <span>ポイントそうさ</span>
+                <button id="closeWindowButton" class="close-button">×</button>
+            </div>
+            <div class="window-body">
+                <table id="pointControlTable">
+                    <tr>
+                        <td>
+                            <div class="button-group">
+                                <button onclick="addPoint('red')">＋</button>
+                                <span class="point-label" style="color: red;">●</span>
+                                <button onclick="removePoint('red')">－</button>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="button-group">
+                                <button onclick="addPoint('blue')">＋</button>
+                                <span class="point-label" style="color: blue;">●</span>
+                                <button onclick="removePoint('blue')">－</button>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="button-group">
+                                <button onclick="addPoint('black')">＋</button>
+                                <span class="point-label" style="color: black;">●</span>
+                                <button onclick="removePoint('black')">－</button>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+                <!-- シーン2以降で表示される「前のシーンをコピー」ボタン -->
+                <div id="copyPreviousSceneButton" style="display: none; margin-top: 10px;">
+                    <button onclick="copyPreviousScene()">前のシーンをコピー</button>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- 操作ボタン -->
+        <!-- 操作ボタンのテーブル -->
+        <table id="operationControlTable">
+            <tr>
+                <td> 　　　　 </td>
+                <td><button id="playPauseButton" onclick="togglePlayPause()">さいせい</button></td>
+                <td><button onclick="resetCurrentStrategy()">リセット</button></td>
+                <td><button onclick="deleteCurrentStrategy()">けす</button></td>
+                <td><button onclick="saveCurrentStrategy()">ほぞん</button></td>
+                <td><button onclick="addNewStrategy()">ついか</button></td>
+                <td><button id="togglePointControlButton" onclick="togglePointControlWindow()">ポイントそうさ</button></td>
+                <td><label>
+                    　たてラインのかず:
+                    <input id="verticalLineCountInput" type="number" value="2" min="1" max="10" style="width: 50px; margin-left: 10px;">
+                </label></td>
+                <td>
+                <button id="showTimerButton">タイマー</button> <!-- タイマーを開くボタン -->
+                </td>
+            </tr>
+        </table>
+        <!-- タイマーウインドウ -->
+        <div id="TimerWindow" class="timer-window">
+            <div class="timer-window-header">
+                <span>ウェブタイマー</span>
+                <span id="closeTimerButton" class="timer-close-button">×</span>
+            </div>
+            <div id="TimerDisplay">00:00:00</div>
+            <div class="timer-separator-bar"></div>
+            <div class="timer-button-container">
+                <button id="timerStartStopButton">スタート</button>
+                <button id="timerResetButton">リセット</button>
+                <button id="timerAddMinuteButton">+1分</button>
+                <button id="timerSubtractMinuteButton">-1分</button>
+                <button id="timerAddSecondButton">+1秒</button>
+                <button id="timerSubtractSecondButton">-1秒</button>
+            </div>
+        </div>
+    <!-- ローカル音声ファイル -->
+    <audio id="beep-sound" src="sounds/beep.mp3"></audio>
+    </div>
+
+    <script src="sakusenban2.js"></script>
+    <script src="timer.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,381 @@
+﻿/* 全体の中央揃え用コンテナ */
+body {
+    display: flex;
+    justify-content: center; /* 左右を中央に配置 */
+    align-items: flex-start; /* 上詰めに配置 */
+    min-height: 100vh;
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-color: #f0f0f0;
+    padding-top: 20px; /* 上部に余白を追加する場合（任意） */
+}
+
+/* メインコンテナ */
+#mainContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+/* ポイント配置エリア */
+#strategyDisplay {
+    position: relative;
+    width: 750px; /* お好みの幅 */
+    height: 450px; /* お好みの高さ */
+    border: 2px solid #333;
+    background-color: #f9f9f9;
+    margin-bottom: 20px;
+}
+
+#pointControlTable {
+    width: auto;
+    margin-top: 10px;
+    border-collapse: collapse;
+    text-align: center; /* テーブル全体を中央揃え */
+}
+
+#pointControlTable th, #pointControlTable td {
+    padding: 10px;
+    border: 1px solid #ccc;
+    text-align: center; /* 各セル内を中央揃え */
+}
+
+#pointControlTable th {
+    font-weight: bold;
+    color: #333;
+}
+
+.button-group {
+    display: flex;
+    align-items: center;
+    justify-content: center; /* ボタンとラベルを中央に揃える */
+    gap: 5px; /* ボタン間のスペース */
+}
+
+#pointControlTable button {
+    width: 30px;
+    height: 30px;
+    font-size: 18px;
+    font-weight: bold;
+    color: #333;
+    background-color: #e0e0e0;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+}
+
+#pointControlTable button:hover {
+    background-color: #c0c0c0;
+}
+
+.point-label {
+    font-size: 35px;
+    line-height: 1; /* 縦方向の中央揃えを調整 */
+}
+
+/* 縦棒のスタイル */
+.vertical-line {
+    position: absolute;
+    width: 2px;                  /* 縦棒の太さ */
+    height: 100%;                /* 描画エリアの高さに合わせる */
+    background-color: black;     /* 縦棒の色 */
+    top: 0;                      /* 縦棒を描画エリアの上端に合わせる */
+}
+
+/* ドラッグ可能なポイントのスタイル */
+.draggable {
+    border-radius: 50%; /* 丸いポイントにする */
+    cursor: grab;       /* ドラッグ可能なカーソル */
+    position: relative; /* 疑似要素の基準を設定 */
+    z-index: 1; /* ポイントが他の要素より前面に表示される */
+}
+
+/* ポイントのクリック範囲を拡張 */
+.draggable::before {
+    content: '';
+    position: absolute;
+    top: -10px; /* 上下左右に10px分クリック範囲を広げる */
+    left: -10px;
+    right: -10px;
+    bottom: -10px;
+    background-color: transparent; /* 透明にして表示に影響を与えない */
+    pointer-events: all; /* 範囲内のクリックイベントを有効化 */
+    z-index: -1; /* 元のポイントが上に表示されるように調整 */
+}
+
+/* ポイントの番号ラベル */
+.draggable span {
+    position: absolute;
+    top: -10px;
+    left: 5px;
+    color: black;
+    font-size: 12px;
+}
+
+/* タブボタンのスタイル */
+#tabs {
+    display: flex;
+    gap: 5px;
+    margin-bottom: 10px;
+}
+
+.tab-button {
+    padding: 8px 12px;
+    background-color: #e0e0e0;
+    border: 1px solid #333;
+    cursor: pointer;
+    font-size: 14px;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+}
+
+.tab-button:hover {
+    background-color: #c0c0c0;
+}
+
+.tab-button.active {
+    background-color: #4CAF50;
+    color: white;
+}
+
+/* シーン切り替えボタンのスタイル */
+#sceneTabs {
+    display: flex;
+    gap: 5px;
+    margin-bottom: 10px;
+}
+
+#sceneTabs button {
+    padding: 6px 10px;
+    background-color: #e0e0e0;
+    border: 1px solid #333;
+    cursor: pointer;
+    font-size: 14px;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+}
+
+#sceneTabs button:hover {
+    background-color: #c0c0c0;
+}
+
+#sceneTabs button.active {
+    background-color: #2196F3;
+    color: white;
+}
+
+/* 操作ボタンのスタイル */
+button {
+    padding: 8px 12px;
+    margin-top: 10px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.3s;
+}
+
+button:hover {
+    background-color: #45a049;
+}
+
+button:active {
+    background-color: #3e8e41;
+}
+
+/* ウインドウ全体 */
+.window {
+    position: absolute;
+    top: 20%;
+    left: 30%;
+    width: 380px;
+    border: 1px solid #333;
+    border-radius: 8px;
+    background-color: white;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+    display: none; /* 初期状態で非表示 */
+}
+
+/* ウインドウヘッダー */
+.window-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 2px;
+    background-color: #4CAF50;
+    color: white;
+    border-bottom: 1px solid #333;
+    cursor: move; /* ヘッダー部分を掴んで移動可能 */
+}
+
+/* ウインドウボディ */
+.window-body {
+    padding: 10px;
+}
+
+/* ウインドウを閉じるボタン */
+.close-button {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 24px;
+    cursor: pointer;
+}
+
+/* トグルボタン */
+#togglePointControlButton {
+    margin-left: 10px;
+    padding: 8px 12px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+#togglePointControlButton:hover {
+    background-color: #45a049;
+}
+
+/* ポイント操作ウインドウ */
+#pointControlWindow {
+    position: fixed;
+    bottom: 10px;
+    right: 10px;
+    width: 360px; /* 適切な幅 */
+    max-height: 160px; /* 最大高さを設定 */
+    background-color: #fff; /* 背景色 */
+    border: 1px solid #ccc; /* 枠線 */
+    border-radius: 8px; /* 角を丸く */
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); /* ボックスシャドウ */
+    z-index: 1000; /* 他の要素より前面に表示 */
+}
+
+
+/* タイマーウインドウ全体 */
+#TimerWindow {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: white;
+  border: 3px solid #aaa;
+  border-radius: 10px; /* 全体の角を丸く */
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+  width: 900px;
+  height: 480px; /* 高さを400pxに設定 */
+  padding: 0; /* ウィンドウ内の余白なし */
+  display: none;
+  z-index: 1000; /* 他の要素より前面に */
+}
+
+/* タイマーウインドウヘッダー */
+.timer-window-header {
+  background-color: #32cd32; /* 黄緑色 */
+  color: white; /* 白文字 */
+  padding: 10px 20px; /* 内側余白 */
+  cursor: move;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-radius: 10px 10px 0 0; /* 上部のみ角丸 */
+  margin: 0; /* 枠とぴったりくっつける */
+}
+
+/* ヘッダー内テキストのスタイル */
+.timer-window-header span {
+  font-size: 18px;
+  font-weight: bold;
+}
+
+/* タイマーの閉じるボタン */
+.timer-close-button {
+  font-size: 20px;
+  cursor: pointer;
+  color: white;
+}
+
+/* 灰色のバー */
+.timer-separator-bar {
+  background-color: #aaa; /* 灰色 */
+  height: 3px; /* バーの高さ */
+  margin: 0px 0; /* 上下の間隔 */
+  width: 100%; /* 横幅をウィンドウ全体に */
+  border-radius: 2px; /* バーの角を少し丸く */
+}
+
+/* タイマー表示 */
+#TimerDisplay {
+  font-size: 200px;
+  margin: 40px 0;
+  text-align: center;
+  transition: color 0.5s;
+}
+
+/* 点滅アニメーション */
+#TimerDisplay.flashing {
+  animation: flash 1s infinite;
+}
+
+@keyframes flash {
+  0%, 100% { color: red; }
+  50% { color: black; }
+}
+
+/* タイマー内のボタンコンテナ */
+.timer-button-container {
+  text-align: center;
+  margin-top: 20px;
+}
+
+/* タイマー内ボタンのスタイル */
+.timer-button-container button {
+  font-size: 18px;
+  margin: 15px 10px;
+  padding: 10px 25px;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  transition: background-color 0.3s, transform 0.2s;
+  background-color: #007bff;
+  color: white;
+  border: none;
+}
+
+/* ボタンのホバー効果 */
+.timer-button-container button:hover {
+  transform: scale(1.05);
+  background-color: #0056b3;
+}
+
+/* 各ボタンの個別スタイル */
+#timerStartStopButton {
+  background-color: #28a745; /* 緑 */
+  color: white;
+}
+
+#timerResetButton {
+  background-color: #dc3545; /* 赤 */
+  color: white;
+}
+
+#timerAddMinuteButton,
+#timerAddSecondButton {
+  background-color: #90caf9; /* 青 */
+  color: #0d47a1;
+}
+
+#timerSubtractMinuteButton,
+#timerSubtractSecondButton {
+  background-color: #fff9c4; /* 黄色 */
+  color: #f57f17;
+}
