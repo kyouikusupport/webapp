@@ -1,8 +1,11 @@
 // タイマーの状態を管理する変数
 let timerElapsedTime = 0; // 経過時間を秒単位で管理
 let timerIsRunning = false; // タイマーが動作中かどうか
-let timerInterval; // タイマーのインターバルID
-let timerIsCountdown = false; // カウントダウンモードかどうか
+let timerTimeout; // setTimeoutのID
+let timerIsCountdown = null; // カウントダウンモードかどうか
+let timerInitialCountdownValue = 0; // カウントダウンモード時の初期値
+let timerIsFlashing = false; // 点滅中かどうか
+let beepSoundPlaying = false; // 音が再生中かどうか
 
 // タイマー関連の要素を取得
 const timerWindow = document.getElementById("TimerWindow");
@@ -24,6 +27,54 @@ function updateTimerDisplay() {
     timerDisplay.textContent = `${String(hours).padStart(2, "0")}:${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
 }
 
+// タイマーを動作させる
+function startTimer() {
+    const updateInterval = 1000; // 1秒間隔
+    let lastTime = performance.now(); // 前回の時間を記録
+
+    function timerLoop() {
+        if (!timerIsRunning) return; // タイマーが停止中の場合は終了
+
+        const now = performance.now();
+        const elapsed = now - lastTime;
+
+        if (elapsed >= updateInterval) {
+            lastTime = now;
+
+            if (timerIsCountdown) {
+                if (timerElapsedTime > 0) {
+                    timerElapsedTime -= 1; // カウントを減らす
+                }
+
+                if (timerElapsedTime <= 0) {
+                    timerElapsedTime = 0;
+                    updateTimerDisplay();
+
+                    // 点滅と音声を開始
+                    if (!timerIsFlashing) {
+                        timerDisplay.classList.add("flashing");
+                        timerIsFlashing = true;
+                    }
+                    if (!beepSoundPlaying) {
+                        beepSound.play().catch((error) => console.error("音声エラー", error));
+                        beepSoundPlaying = true;
+                    }
+
+                    return; // ここで終了（カウントをこれ以上進めない）
+                }
+            } else {
+                timerElapsedTime += 1; // カウントアップ
+            }
+
+            updateTimerDisplay(); // 表示を更新
+        }
+
+        timerTimeout = setTimeout(timerLoop, updateInterval - (elapsed % updateInterval));
+    }
+
+    timerLoop(); // タイマー処理を開始
+}
+
 // モーダルを開く
 document.getElementById("showTimerButton").addEventListener("click", () => {
     timerWindow.style.display = "block";
@@ -37,44 +88,61 @@ closeTimerButton.addEventListener("click", () => {
 // タイマーをスタートまたはストップ
 timerStartStopButton.addEventListener("click", () => {
     if (timerIsRunning) {
-        clearInterval(timerInterval);
+        // ストップボタンの動作
         timerIsRunning = false;
+        clearTimeout(timerTimeout);
         timerStartStopButton.textContent = "スタート";
+
+        // 点滅と音声を停止
+        if (timerIsFlashing) {
+            timerDisplay.classList.remove("flashing");
+            timerIsFlashing = false;
+        }
+        if (beepSoundPlaying) {
+            beepSound.pause();
+            beepSound.currentTime = 0;
+            beepSoundPlaying = false;
+        }
+
+        // タイマーを初期値に戻す（カウントダウン時のみ）
+        if (timerIsCountdown) {
+            timerElapsedTime = timerInitialCountdownValue;
+            updateTimerDisplay();
+        }
     } else {
+        // スタートボタンの動作
         timerIsRunning = true;
-        if (timerElapsedTime > 0) timerIsCountdown = true;
+
+        if (timerIsCountdown === null) {
+            timerIsCountdown = timerElapsedTime > 0; // 初回のみ設定
+            if (timerIsCountdown) timerInitialCountdownValue = timerElapsedTime; // 初期値を記録
+        }
+
         timerStartStopButton.textContent = "ストップ";
 
-        timerInterval = setInterval(() => {
-            if (timerIsCountdown) {
-                timerElapsedTime -= 1;
-                if (timerElapsedTime <= 0) {
-                    clearInterval(timerInterval);
-                    timerElapsedTime = 0;
-                    updateTimerDisplay();
-                    timerDisplay.classList.add("flashing");
-                    beepSound.play().catch((error) => console.error("音声エラー", error));
-                    setTimeout(() => timerDisplay.classList.remove("flashing"), 4000);
-                    timerIsRunning = false;
-                    timerStartStopButton.textContent = "スタート";
-                    return;
-                }
-            } else {
-                timerElapsedTime += 1;
-            }
-            updateTimerDisplay();
-        }, 1000);
+        startTimer(); // タイマーを開始
     }
 });
 
 // タイマーをリセット
 timerResetButton.addEventListener("click", () => {
-    clearInterval(timerInterval);
-    timerElapsedTime = 0;
     timerIsRunning = false;
-    timerIsCountdown = false;
+    clearTimeout(timerTimeout);
+    timerElapsedTime = 0; // リセット時は常に0に戻す
+    timerIsCountdown = null;
     updateTimerDisplay();
-    timerDisplay.classList.remove("flashing");
+
+    // 点滅と音声を停止
+    if (timerIsFlashing) {
+        timerDisplay.classList.remove("flashing");
+        timerIsFlashing = false;
+    }
+    if (beepSoundPlaying) {
+        beepSound.pause();
+        beepSound.currentTime = 0;
+        beepSoundPlaying = false;
+    }
+
     timerStartStopButton.textContent = "スタート";
 });
 
@@ -107,7 +175,6 @@ function makeTimerWindowDraggable() {
     const header = timerWindow.querySelector(".timer-window-header");
     let offsetX = 0, offsetY = 0, isDragging = false;
 
-    // マウスイベント: ドラッグ開始
     header.addEventListener("mousedown", (e) => {
         isDragging = true;
         offsetX = e.clientX - timerWindow.offsetLeft;
@@ -116,7 +183,6 @@ function makeTimerWindowDraggable() {
         document.addEventListener("mouseup", stopDragging);
     });
 
-    // タッチイベント: ドラッグ開始
     header.addEventListener("touchstart", (e) => {
         isDragging = true;
         const touch = e.touches[0];
