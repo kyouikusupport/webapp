@@ -19,6 +19,15 @@ const timerSubtractSecondButton = document.getElementById("timerSubtractSecondBu
 const closeTimerButton = document.getElementById("closeTimerButton");
 const beepSound = document.getElementById("beep-sound");
 
+// 通知の許可をリクエスト
+if (Notification.permission !== "granted") {
+    Notification.requestPermission().then((permission) => {
+        if (permission !== "granted") {
+            console.warn("通知の許可が得られませんでした。");
+        }
+    });
+}
+
 // タイマー表示を更新
 function updateTimerDisplay() {
     const hours = Math.floor(timerElapsedTime / 3600);
@@ -36,14 +45,14 @@ function startTimer() {
         if (!timerIsRunning) return; // タイマーが停止中の場合は終了
 
         const now = performance.now();
-        const elapsed = now - lastTime;
+        const elapsed = Math.floor((now - lastTime) / 1000);
 
-        if (elapsed >= updateInterval) {
-            lastTime = now;
+        if (elapsed > 0) {
+            lastTime += elapsed * 1000;
 
             if (timerIsCountdown) {
                 if (timerElapsedTime > 0) {
-                    timerElapsedTime -= 1; // カウントを減らす
+                    timerElapsedTime -= elapsed;
                 }
 
                 if (timerElapsedTime <= 0) {
@@ -60,16 +69,21 @@ function startTimer() {
                         beepSoundPlaying = true;
                     }
 
-                    return; // ここで終了（カウントをこれ以上進めない）
+                    // 通知を送信
+                    if (Notification.permission === "granted") {
+                        new Notification("タイマーが終了しました！");
+                    }
+
+                    return; // タイマー終了後はループを停止
                 }
             } else {
-                timerElapsedTime += 1; // カウントアップ
+                timerElapsedTime += elapsed; // カウントアップ
             }
 
             updateTimerDisplay(); // 表示を更新
         }
 
-        timerTimeout = setTimeout(timerLoop, updateInterval - (elapsed % updateInterval));
+        timerTimeout = setTimeout(timerLoop, updateInterval);
     }
 
     timerLoop(); // タイマー処理を開始
@@ -78,10 +92,8 @@ function startTimer() {
 // モーダルを表示または非表示に切り替える
 document.getElementById("showTimerButton").addEventListener("click", () => {
     if (timerWindow.style.display === "block") {
-        // ウィンドウが表示中の場合は非表示にする
         timerWindow.style.display = "none";
     } else {
-        // ウィンドウが非表示の場合は表示する
         timerWindow.style.display = "block";
     }
 });
@@ -94,7 +106,6 @@ closeTimerButton.addEventListener("click", () => {
 // タイマーをスタートまたはストップ
 timerStartStopButton.addEventListener("click", () => {
     if (timerIsRunning) {
-        // ストップボタンの動作
         timerIsRunning = false;
         clearTimeout(timerTimeout);
         timerStartStopButton.textContent = "スタート";
@@ -110,13 +121,12 @@ timerStartStopButton.addEventListener("click", () => {
             beepSoundPlaying = false;
         }
 
-        // タイマーを初期値に戻す（カウントダウン時のみ）
-        if (timerIsCountdown) {
+        // タイマーが0の場合のみ初期値に戻す
+        if (timerIsCountdown && timerElapsedTime === 0) {
             timerElapsedTime = timerInitialCountdownValue;
             updateTimerDisplay();
         }
     } else {
-        // スタートボタンの動作
         timerIsRunning = true;
 
         if (timerIsCountdown === null) {
@@ -125,6 +135,9 @@ timerStartStopButton.addEventListener("click", () => {
         }
 
         timerStartStopButton.textContent = "ストップ";
+
+        // 音声の予約再生
+        beepSound.play().then(() => beepSound.pause()).catch((error) => console.error("音声予約失敗:", error));
 
         startTimer(); // タイマーを開始
     }
@@ -175,48 +188,6 @@ timerSubtractSecondButton.addEventListener("click", () => {
     timerElapsedTime = Math.max(0, timerElapsedTime - 1);
     updateTimerDisplay();
 });
-
-// タイマーウインドウをドラッグ可能にする
-function makeTimerWindowDraggable() {
-    const header = timerWindow.querySelector(".timer-window-header");
-    let offsetX = 0, offsetY = 0, isDragging = false;
-
-    header.addEventListener("mousedown", (e) => {
-        isDragging = true;
-        offsetX = e.clientX - timerWindow.offsetLeft;
-        offsetY = e.clientY - timerWindow.offsetTop;
-        document.addEventListener("mousemove", moveTimerWindow);
-        document.addEventListener("mouseup", stopDragging);
-    });
-
-    header.addEventListener("touchstart", (e) => {
-        isDragging = true;
-        const touch = e.touches[0];
-        offsetX = touch.clientX - timerWindow.offsetLeft;
-        offsetY = touch.clientY - timerWindow.offsetTop;
-        document.addEventListener("touchmove", moveTimerWindow);
-        document.addEventListener("touchend", stopDragging);
-    });
-
-    function moveTimerWindow(e) {
-        if (isDragging) {
-            const clientX = e.touches ? e.touches[0].clientX : e.clientX;
-            const clientY = e.touches ? e.touches[0].clientY : e.clientY;
-            timerWindow.style.left = `${clientX - offsetX}px`;
-            timerWindow.style.top = `${clientY - offsetY}px`;
-        }
-    }
-
-    function stopDragging() {
-        isDragging = false;
-        document.removeEventListener("mousemove", moveTimerWindow);
-        document.removeEventListener("mouseup", stopDragging);
-        document.removeEventListener("touchmove", moveTimerWindow);
-        document.removeEventListener("touchend", stopDragging);
-    }
-}
-
-makeTimerWindowDraggable();
 
 // 初期状態でタイマー表示を更新
 updateTimerDisplay();
