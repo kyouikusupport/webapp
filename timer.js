@@ -19,15 +19,6 @@ const timerSubtractSecondButton = document.getElementById("timerSubtractSecondBu
 const closeTimerButton = document.getElementById("closeTimerButton");
 const beepSound = document.getElementById("beep-sound");
 
-// 通知の許可をリクエスト
-if (Notification.permission !== "granted") {
-    Notification.requestPermission().then((permission) => {
-        if (permission !== "granted") {
-            console.warn("通知の許可が得られませんでした。");
-        }
-    });
-}
-
 // タイマー表示を更新
 function updateTimerDisplay() {
     const hours = Math.floor(timerElapsedTime / 3600);
@@ -67,11 +58,6 @@ function startTimer() {
                     if (!beepSoundPlaying) {
                         beepSound.play().catch((error) => console.error("音声エラー", error));
                         beepSoundPlaying = true;
-                    }
-
-                    // 通知を送信
-                    if (Notification.permission === "granted") {
-                        new Notification("タイマーが終了しました！");
                     }
 
                     return; // タイマー終了後はループを停止
