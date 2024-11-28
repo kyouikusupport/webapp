@@ -75,9 +75,15 @@ function startTimer() {
     timerLoop(); // タイマー処理を開始
 }
 
-// モーダルを開く
+// モーダルを表示または非表示に切り替える
 document.getElementById("showTimerButton").addEventListener("click", () => {
-    timerWindow.style.display = "block";
+    if (timerWindow.style.display === "block") {
+        // ウィンドウが表示中の場合は非表示にする
+        timerWindow.style.display = "none";
+    } else {
+        // ウィンドウが非表示の場合は表示する
+        timerWindow.style.display = "block";
+    }
 });
 
 // モーダルを閉じる
